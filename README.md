@@ -1,91 +1,100 @@
-SentimentScope: Sentiment Analysis with a Transformer from Scratch
-1. Project Overview
-This project involves building, training, and evaluating a transformer-based neural network for sentiment analysis. The model is constructed from scratch using PyTorch and is trained on the popular IMDB movie review dataset to classify reviews as either positive or negative. The primary goal is to achieve a classification accuracy of over 75% on the unseen test dataset.
+# SentimentScope: Sentiment Analysis with a Custom Transformer in PyTorch
 
-This project serves as a practical, hands-on guide to understanding the internal components of a transformer architecture and adapting it for a binary classification task.
+![Python](https://img.shields.io/badge/Python-3.10+-blue?style=for-the-badge&logo=python)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.0-orange?style=for-the-badge&logo=pytorch)
+![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Transformers-yellow?style=for-the-badge)
 
-Core Technologies:
+## Overview
 
-Python
+This project, **SentimentScope**, involves building, training, and evaluating a transformer model from scratch to perform sentiment analysis. The model is designed as a binary classifier to determine whether a movie review from the IMDB dataset is positive or negative.
 
-PyTorch
+The primary goal is to demonstrate a fundamental understanding of the transformer architecture and its application to a classification task using PyTorch. The entire pipeline, from data loading and preprocessing to model training and evaluation, is implemented within the provided Jupyter Notebook. The model successfully achieves over 75% accuracy on the test set.
 
-Hugging Face Transformers (for the tokenizer)
+## Key Concepts Demonstrated
 
-Pandas
+-   **Custom Transformer Implementation**: Building a decoder-only transformer architecture from fundamental components (`AttentionHead`, `MultiHeadAttention`, `FeedForward`, `Block`) without relying on pre-built model classes.
+-   **Adaptation for Classification**: Modifying the standard transformer architecture for a classification task by implementing a mean pooling strategy and adding a final linear layer for logit generation.
+-   **PyTorch `Dataset` and `DataLoader`**: Creating a custom PyTorch `Dataset` class to handle text data and using `DataLoader` for efficient batching, and shuffling.
+-   **Subword Tokenization**: Utilizing the `bert-base-uncased` tokenizer from the Hugging Face `transformers` library for effective subword tokenization.
+-   **Data Exploration & Visualization**: Analyzing the dataset's characteristics, such as label distribution and review length, using `pandas` and `matplotlib`.
+-   **End-to-End Training Loop**: Implementing a complete training and validation loop in PyTorch, including loss calculation (`CrossEntropyLoss`), backpropagation, and optimization (`AdamW`).
 
-Matplotlib
+## Project Workflow
 
-2. Learning Objectives
-By completing this project, you will demonstrate an understanding of:
+1.  **Data Loading and Preparation**: The IMDB movie review dataset is loaded from text files into a Pandas DataFrame.
+2.  **Exploratory Data Analysis (EDA)**: The dataset is analyzed to understand its structure, including the distribution of positive/negative labels and the length of reviews.
+3.  **PyTorch DataLoader Implementation**: A custom `IMDBDataset` class is created to tokenize reviews on-the-fly. `DataLoader` instances are then set up for the training, validation, and test sets.
+4.  **Custom Transformer Architecture**: The `DemoGPT` model is built by assembling custom modules for self-attention, multi-head attention, and feed-forward networks. It's specifically tailored for binary classification.
+5.  **Model Training**: The model is trained for 3 epochs using the AdamW optimizer and Cross-Entropy loss. Validation accuracy is monitored after each epoch.
+6.  **Model Evaluation**: The trained model's performance is evaluated on the unseen test dataset to measure its final accuracy.
 
-Data Loading and Preprocessing: Loading a text-based dataset, performing exploratory data analysis, and preparing it for a deep learning model using a custom PyTorch Dataset and DataLoader.
+## Model Architecture
 
-Transformer Architecture: Implementing the core components of a transformer model, including Self-Attention, Multi-Head Attention, and Feed-Forward layers.
+The core of this project is a custom-built, decoder-only transformer model. Unlike using a pre-trained model like BERT for fine-tuning, this model is constructed from scratch to demonstrate foundational principles.
 
-Model Customization: Adapting a standard transformer architecture for a classification task by adding a pooling mechanism and a final linear classification layer.
+The key components are:
+-   `AttentionHead`: Implements a single head of scaled dot-product self-attention.
+-   `MultiHeadAttention`: Combines multiple `AttentionHead` modules to allow the model to focus on different parts of the sequence simultaneously.
+-   `FeedForward`: A simple fully connected feed-forward network applied after the attention layer.
+-   `Block`: A standard transformer block that combines multi-head attention and a feed-forward network with residual connections and layer normalization.
 
-Model Training and Evaluation: Implementing a complete training loop in PyTorch with a loss function (Cross-Entropy) and an optimizer (AdamW), while monitoring performance with a validation set.
+For the final classification, the model performs **mean pooling** on the output embeddings of the final transformer block. This aggregates the token-level information into a single vector representation for the entire review, which is then passed through a final linear layer to produce the logits for the "Positive" and "Negative" classes.
 
-Final Testing: Evaluating the final model's performance on the test set to determine its generalization capability.
+## Dataset
 
-3. Dataset
-The project uses the Large Movie Review Dataset (IMDB). This dataset contains 50,000 highly polarized movie reviews, split evenly into 25,000 for training and 25,000 for testing.
+The project uses the well-known **IMDB Movie Review Dataset**.
+-   **Source**: [Stanford AI Group](https://ai.stanford.edu/~amaas/data/sentiment/)
+-   **Contents**: It consists of 50,000 highly polarized movie reviews.
+-   **Split**: The data is evenly split into 25,000 reviews for training and 25,000 for testing. Each set has a balanced 12,500 positive and 12,500 negative reviews.
 
-The data is organized into the following directory structure:
+## Results
 
-aclImdb/
-├── train/
-│   ├── pos/    # 12,500 positive training reviews
-│   ├── neg/    # 12,500 negative training reviews
-├── test/
-│   ├── pos/    # 12,500 positive testing reviews
-│   ├── neg/    # 12,500 negative testing reviews
+The model was trained for **3 epochs** on the training dataset.
 
-The model is trained to predict a label of 1 for positive reviews and 0 for negative reviews.
+-   **Validation Accuracy (after 3 epochs)**: **78.96%**
+-   **Final Test Accuracy**: The model successfully achieves the project goal of **>75%** on the test set, demonstrating effective learning and generalization.
 
-4. Setup and Installation
-To run this project, you need to have Python 3 installed. You can then install the necessary libraries using pip.
+## How to Run
 
-Clone the repository or download the project files.
+To run this project on your own machine, follow these steps:
 
-Install the required dependencies:
+**1. Clone the Repository**
+```bash
+git clone [https://github.com/your-username/SentimentScope.git](https://github.com/your-username/SentimentScope.git)
+cd SentimentScope
+```
 
-pip install torch pandas transformers matplotlib numpy
+**2. Set Up a Virtual Environment**
+It's recommended to use a virtual environment to manage dependencies.
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+```
 
-5. How to Run the Project
-Extract the Dataset: The first code cell in the SentimentScope_starter.ipynb notebook contains the command to extract the dataset archive:
+**3. Install Dependencies**
+```bash
+pip install -r requirements.txt
+```
+*(You will need to create a `requirements.txt` file with the following content):*
+```
+torch
+transformers
+pandas
+matplotlib
+numpy
+ipykernel
+```
 
-# Make sure to uncomment this line in the notebook before running!
+**4. Download the Dataset**
+The dataset is provided as `aclImdb_v1.tar.gz`. Make sure it is in the root directory of the project. The notebook contains a cell to extract it:
+```python
+# In the notebook:
 !tar -xzf aclImdb_v1.tar.gz
+```
 
-This will create the aclIMDB folder in your project directory.
-
-Open the Jupyter Notebook:
-
-jupyter notebook "SentimentScope_starter (5).ipynb"
-
-Run the Cells: Execute the cells in the notebook sequentially from top to bottom. The notebook is structured to guide you through each step of the process:
-
-Data loading and exploration.
-
-Tokenizer testing.
-
-Implementation of the PyTorch Dataset and DataLoader.
-
-Definition of the DemoGPT transformer model.
-
-Training loop execution.
-
-Final evaluation on the test set.
-
-6. Project Results and Conclusion
-The model is trained for 3 epochs and successfully achieves a final test accuracy of over 78%, exceeding the project goal of 75%.
-
-Key Takeaways:
-
-Transformer Versatility: This project demonstrates that transformer architectures are not just for language generation but can be effectively adapted for classification tasks.
-
-Importance of Pooling: For sequence classification, aggregating token-level embeddings into a single vector (e.g., via mean pooling) is a crucial step to feed into a final classification layer.
-
-End-to-End PyTorch Workflow: The notebook provides a complete example of a deep learning workflow in PyTorch, from custom data handling to model training and evaluation.
+**5. Run the Jupyter Notebook**
+Launch Jupyter Lab or Jupyter Notebook and open the `SentimentScope_starter.ipynb` file.
+```bash
+jupyter lab
+```
+You can then run the cells sequentially to see the entire process.
